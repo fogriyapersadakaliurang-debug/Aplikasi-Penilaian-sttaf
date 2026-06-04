@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard KPI Front Office - Foto Fix</title>
+  <style>
+    :root {
+      --bg:#f2f5f9;--card:#fff;--dark:#101828;--nav:#0f172a;--text:#182235;--muted:#64748b;--line:#e2e8f0;
+      --blue:#2563eb;--green:#16a34a;--orange:#f97316;--red:#dc2626;--gold:#c79a3b;--purple:#7c3aed;
+      --umum:#d9ebfb;--khusus:#ffd6b8;--other:#d9efc7;--shadow:0 18px 45px rgba(15,23,42,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top left,rgba(199,154,59,.15),transparent 30%),var(--bg);color:var(--text)}
+    .app{display:grid;grid-template-columns:285px 1fr;min-height:100vh}
+    aside{background:linear-gradient(180deg,#0f172a,#111827);color:#fff;padding:22px 16px;position:sticky;top:0;height:100vh;overflow:auto}
+    .brand-card{border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:18px;background:linear-gradient(135deg,rgba(199,154,59,.22),rgba(255,255,255,.06));margin-bottom:16px}
+    .brand{font-size:21px;font-weight:900;line-height:1.15}.subbrand{font-size:12px;color:#cbd5e1;line-height:1.5;margin-top:9px}
+    .access-box{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px;margin-bottom:15px}
+    .access-box label{color:#e5e7eb}.access-box select{background:#111827;color:#fff;border:1px solid rgba(255,255,255,.18)}
+    .login-badge{margin-top:10px;font-size:11px;line-height:1.45;color:#d1d5db}
+    .nav button{width:100%;display:block;border:0;background:transparent;color:#d1d5db;text-align:left;padding:12px 14px;border-radius:14px;cursor:pointer;margin-bottom:6px;font-weight:800}
+    .nav button.active,.nav button:hover{background:rgba(255,255,255,.12);color:#fff}
+    main{padding:26px;overflow:auto}.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px}
+    h1{margin:0 0 8px;font-size:30px;letter-spacing:-.03em}h2{margin:0;font-size:20px}h3{margin:0 0 12px;font-size:16px}
+    .desc{color:var(--muted);font-size:14px;line-height:1.55}.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    button,.btn{border:0;border-radius:13px;padding:10px 14px;font-weight:800;cursor:pointer;font-size:13px}
+    .btn-primary{background:var(--blue);color:#fff}.btn-dark{background:var(--dark);color:#fff}.btn-green{background:var(--green);color:#fff}.btn-orange{background:var(--orange);color:#fff}.btn-red{background:var(--red);color:#fff}.btn-light{background:#e5e7eb;color:#111827}.btn-gold{background:var(--gold);color:#111827}
+    .section{display:none}.section.active{display:block}.grid{display:grid;gap:16px}.grid-4{grid-template-columns:repeat(4,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-2{grid-template-columns:repeat(2,1fr)}
+    .hero{background:linear-gradient(135deg,#101828,#1e293b);color:#fff;border-radius:22px;padding:22px;box-shadow:var(--shadow);margin-bottom:16px}.hero p{color:#cbd5e1;max-width:850px;line-height:1.6;margin:8px 0 0}
+    .card{background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
+    .metric-title{color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}.metric-value{font-size:34px;font-weight:950;margin-top:9px;letter-spacing:-.04em}.metric-note{font-size:12px;color:var(--muted);margin-top:7px}
+    .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:22px 0 12px}
+    table{width:100%;border-collapse:collapse;background:#fff;border-radius:16px;overflow:hidden}th,td{padding:14px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:13px;vertical-align:middle}th{background:#f8fafc;color:#475569;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+    input,select,textarea{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:12px;font-size:13px;background:#fff;color:var(--text)}textarea{min-height:74px;resize:vertical}label{display:block;font-weight:900;font-size:12px;margin-bottom:6px;color:#374151}
+    .form-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}.form-row-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:12px}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:900}.badge-a{background:#ecfdf5;color:var(--green)}.badge-b{background:#eff6ff;color:var(--blue)}.badge-c{background:#fff7ed;color:var(--orange)}.badge-d{background:#fef2f2;color:var(--red)}
+    .progress{width:100%;height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--blue),var(--purple));border-radius:999px}
+    .small{font-size:12px;color:var(--muted);line-height:1.6}.kpi-list{margin:0;padding-left:18px;line-height:1.8;color:#374151;font-size:14px}
+    .kpi-matrix{display:grid;grid-template-columns:170px 1fr;overflow:hidden;border-radius:18px;border:1px solid #111827;background:#111827}
+    .kpi-side{display:grid;place-items:center;text-align:center;font-weight:950;font-size:16px;border-right:1px solid #111827;padding:16px}
+    .kpi-side.umum{background:var(--umum)}.kpi-side.khusus{background:var(--khusus)}.kpi-side.other{background:var(--other)}
+    .kpi-content{background:#fff}.kpi-group{border-bottom:1px solid #111827}.kpi-group:last-child{border-bottom:0}.kpi-head{font-weight:950;padding:8px 10px;background:#b9c8da}.khusus-head{background:#ffc79d}.other-head{background:#bedea8}
+    .kpi-item{padding:7px 12px;border-top:1px solid #111827;font-size:13px}
+    .category-box{border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-bottom:14px;background:#fff}.cat-head{padding:12px 14px;font-weight:950}.cat-umum{background:var(--umum)}.cat-khusus{background:var(--khusus)}.cat-other{background:var(--other)}
+    .sub-head{padding:10px 14px;font-weight:900;background:#f8fafc;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .score-grid{display:grid;grid-template-columns:1.5fr 170px;gap:10px;align-items:center;padding:8px 14px;border-bottom:1px solid #f1f5f9}.score-grid:last-child{border-bottom:0}
+    .chart-wrap{position:relative;min-height:310px}canvas{width:100%;max-width:100%;height:auto}
+    .staff-performance-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.staff-card{border:1px solid #e2e8f0;border-radius:18px;padding:15px;background:linear-gradient(180deg,#fff,#f8fafc)}.staff-card-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:12px;align-items:flex-start}
+    .avatar{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,var(--dark),var(--gold));color:#fff;display:grid;place-items:center;font-weight:950}.staff-name{font-weight:950;font-size:16px}.staff-role{color:var(--muted);font-size:12px;margin-top:2px}.score-big{font-size:27px;font-weight:950;margin:8px 0 2px}
+    .kpi-mini{display:grid;gap:8px;margin-top:12px}.kpi-mini-row{display:grid;grid-template-columns:100px 1fr 28px;align-items:center;gap:7px;font-size:11px;color:#475569;font-weight:750}.mini-bar{height:7px;border-radius:999px;background:#e5e7eb;overflow:hidden}.mini-bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--blue))}
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.50);align-items:center;justify-content:center;padding:20px;z-index:20}.modal.active{display:flex}.modal-box{background:#fff;border-radius:22px;max-width:1080px;width:100%;max-height:90vh;overflow:auto;padding:20px;box-shadow:0 30px 90px rgba(0,0,0,.24)}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .empty{color:var(--muted);text-align:center;padding:24px}.print-only{display:none}.rank-line{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.rank-line:last-child{border-bottom:0}.rank-name{font-weight:900}.rank-meta{font-size:12px;color:var(--muted);margin-top:3px}
+
+    .photo-sm{width:58px;height:58px;border-radius:18px;object-fit:cover;border:2px solid #e2e8f0;background:#f8fafc}
+    .photo-md{width:76px;height:76px;border-radius:22px;object-fit:cover;border:2px solid #e2e8f0;background:#f8fafc}
+    .photo-lg{width:120px;height:120px;border-radius:28px;object-fit:cover;border:3px solid #e2e8f0;background:#f8fafc;box-shadow:0 12px 30px rgba(15,23,42,.10)}
+    .photo-placeholder{display:grid;place-items:center;background:linear-gradient(135deg,#101828,#c79a3b);color:white;font-weight:950}
+    .photo-row{display:flex;align-items:center;gap:14px}
+    .photo-preview-wrap{display:flex;align-items:center;gap:16px;padding:14px;border:1px solid var(--line);border-radius:18px;background:#f8fafc;margin-bottom:14px}
+    .photo-help{font-size:12px;color:#64748b;line-height:1.5;margin-top:6px}
+
+    @media(max-width:1180px){.grid-4,.staff-performance-grid{grid-template-columns:repeat(2,1fr)}.kpi-matrix{grid-template-columns:1fr}.kpi-side{min-height:70px;border-right:0;border-bottom:1px solid #111827}}
+    @media(max-width:880px){.app{grid-template-columns:1fr}aside{position:relative;height:auto}.grid-4,.grid-3,.grid-2,.form-row,.form-row-2,.staff-performance-grid{grid-template-columns:1fr}.topbar{flex-direction:column}.actions{justify-content:flex-start}.score-grid{grid-template-columns:1fr}}
+
+    .login-screen{position:fixed;inset:0;z-index:99;background:radial-gradient(circle at top left,rgba(199,154,59,.22),transparent 30%),linear-gradient(135deg,#0f172a,#111827);display:flex;align-items:center;justify-content:center;padding:20px}
+    .login-card{width:100%;max-width:440px;background:rgba(255,255,255,.96);border-radius:26px;padding:28px;box-shadow:0 35px 100px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.25)}
+    .login-title{font-size:26px;font-weight:950;letter-spacing:-.03em;margin:0 0 8px;color:#101828}
+    .login-desc{font-size:13px;color:#64748b;line-height:1.55;margin:0 0 20px}
+    .login-logo{width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,#101828,#c79a3b);color:white;display:grid;place-items:center;font-weight:950;font-size:22px;margin-bottom:16px}
+    .login-error{display:none;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:12px;padding:10px 12px;font-size:12px;font-weight:800;margin-top:12px}
+    .logout-btn{background:#991b1b;color:white}
+    body.locked .app{display:none}
+
+    @media print{body{background:#fff}aside,.actions,.nav,.no-print,.btn,button,.modal{display:none!important}.app{display:block}main{padding:0}.section{display:none!important}#printReport{display:block!important}.print-only{display:block}.card,.hero{box-shadow:none;border:1px solid #ddd;break-inside:avoid;color:#111827;background:#fff}.hero p,.hero h2{color:#111827}tr{page-break-inside:avoid}}
+  </style>
+</head>
+<body class="locked">
+
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">FO</div>
+    <h2 class="login-title">Login Dashboard KPI FO</h2>
+    <p class="login-desc">Masukkan user dan password sesuai hak akses. Tio memiliki akses admin penuh. Intan dapat mengakses dashboard, tetapi data Intan tetap disembunyikan.</p>
+    <div style="margin-bottom:12px">
+      <label>User</label>
+      <select id="loginUser">
+        <option value="tio">Tio - Admin</option>
+        <option value="intan">Intan - Supervisor</option>
+      </select>
+    </div>
+    <div style="margin-bottom:12px">
+      <label>Password</label>
+      <input id="loginPassword" type="password" placeholder="Masukkan password" onkeydown="if(event.key==='Enter')loginDashboard()">
+    </div>
+    <button class="btn-dark" style="width:100%;padding:12px 14px" onclick="loginDashboard()">Login</button>
+    <div class="login-error" id="loginError">User atau password salah.</div>
+    
+  </div>
+</div>
+
+<div class="app">
+  <aside>
+    <div class="brand-card"><div class="brand">FO KPI<br>Performance Control</div><div class="subbrand">Dashboard penilaian staff Front Office berdasarkan KPI umum dan khusus.</div></div>
+    <div class="access-box"><label>Hak Akses</label><select id="accessSelect" disabled onchange="setAccessMode(this.value)"><option value="tio">Tio - Admin</option><option value="intan">Intan - Supervisor</option></select><div class="login-badge" id="loginBadge">Login sebagai Tio. Akses penuh.</div></div>
+    <div class="nav">
+      <button class="active" onclick="showSection('dashboard',this)">▣ Dashboard</button>
+      <button onclick="showSection('performance',this)">◉ Diagram Per Staff</button>
+      <button onclick="showSection('input',this)">✎ Input KPI</button>
+      <button onclick="showSection('staff',this)">☷ Data Staff</button>
+      <button onclick="showSection('criteria',this)">✓ Struktur KPI</button>
+      <button onclick="showSection('report',this)">⎙ Report HRD</button>
+    </div>
+  </aside>
+  <main>
+    <div class="topbar">
+      <div><h1>Dashboard KPI Staff Front Office</h1><div class="desc">Periode: <select id="monthSelect" style="width:auto;display:inline-block" onchange="refreshAll()"></select> <select id="yearSelect" style="width:auto;display:inline-block" onchange="refreshAll()"></select><span id="visibilityNote"></span></div></div>
+      <div class="actions no-print"><button class="btn-primary" onclick="openAssessmentModal()">+ Input KPI</button><button class="btn-green" onclick="openStaffModal()">+ Tambah Staff</button><button class="btn-dark" onclick="window.print()">Print Report</button><button class="btn-light" onclick="resetDemo()">Reset Data</button><button class="logout-btn" onclick="logoutDashboard()">Logout</button></div>
+    </div>
+
+    <section id="dashboard" class="section active">
+      <div class="hero"><h2>Executive FO KPI Overview</h2><p>Dashboard ini menilai staff Front Office berdasarkan KPI yang Anda kirim: Penilaian Umum, Penilaian Khusus, dan Other. Sistem menghitung skor otomatis, grade, ranking, analisa performa, dan report bulanan untuk HRD.</p></div>
+      <div class="grid grid-4">
+        <div class="card"><div class="metric-title">Total Staff Terlihat</div><div class="metric-value" id="totalStaff">0</div><div class="metric-note">Sesuai hak akses aktif</div></div>
+        <div class="card"><div class="metric-title">Rata-Rata Skor</div><div class="metric-value" id="avgScore">0</div><div class="metric-note">Periode dipilih</div></div>
+        <div class="card"><div class="metric-title">Top Performer</div><div class="metric-value" id="topPerformer" style="font-size:22px">-</div><div class="metric-note">Nilai tertinggi bulan ini</div></div>
+        <div class="card"><div class="metric-title">Butuh Coaching</div><div class="metric-value" id="needCoaching">0</div><div class="metric-note">Skor di bawah 75</div></div>
+      </div>
+      <div class="section-title"><h2>Diagram Ranking Performa</h2></div>
+      <div class="grid grid-2">
+        <div class="card"><h3>Skor Total Per Staff</h3><div class="chart-wrap"><canvas id="rankingChart" width="900" height="380"></canvas></div></div>
+        <div class="card"><h3>Komposisi Nilai Rata-Rata Tim</h3><div class="chart-wrap"><canvas id="categoryChart" width="680" height="380"></canvas></div></div>
+      </div>
+      <div class="section-title"><h2>Ranking Detail</h2></div>
+      <div class="card"><table><thead><tr><th>Rank</th><th>Foto</th><th>Nama</th><th>Jabatan</th><th>Skor</th><th>Grade</th><th>Progress</th><th>Rekomendasi</th><th class="no-print">Aksi</th></tr></thead><tbody id="rankingBody"></tbody></table></div>
+    </section>
+
+    <section id="performance" class="section">
+      <div class="section-title"><h2>Diagram Performa Per Staff</h2><div class="no-print"><select id="staffDetailSelect" style="width:280px" onchange="renderDetailCharts()"></select></div></div>
+      <div class="grid grid-2">
+        <div class="card"><h3>Radar KPI Staff</h3><div class="chart-wrap"><canvas id="radarChart" width="680" height="440"></canvas></div></div>
+        <div class="card"><h3>Detail Kategori KPI</h3><div class="chart-wrap"><canvas id="staffKpiChart" width="680" height="440"></canvas></div></div>
+      </div>
+      <div class="section-title"><h2>Kartu Performa Staff</h2></div>
+      <div class="staff-performance-grid" id="staffPerformanceCards"></div>
+    </section>
+
+    <section id="input" class="section">
+      <div class="section-title"><h2>Input Penilaian KPI Bulanan</h2><button class="btn-primary no-print" onclick="openAssessmentModal()">+ Input KPI</button></div>
+      <div class="card"><p class="small">Input cukup menggunakan nilai 1–5 untuk setiap poin KPI. Sistem akan menghitung nilai total otomatis.</p><table><thead><tr><th>Nama</th><th>Periode</th><th>Umum</th><th>Khusus</th><th>Other</th><th>Total</th><th>Grade</th><th class="no-print">Aksi</th></tr></thead><tbody id="assessmentBody"></tbody></table></div>
+    </section>
+
+    <section id="staff" class="section">
+      <div class="section-title"><h2>Data Staff Front Office</h2><button class="btn-green no-print" onclick="openStaffModal()">+ Tambah Staff</button></div>
+      <div class="card"><table><thead><tr><th>Foto</th><th>Nama</th><th>Jabatan</th><th>Status</th><th>Tanggung Jawab Utama</th><th class="no-print">Aksi</th></tr></thead><tbody id="staffBody"></tbody></table></div>
+    </section>
+
+    <section id="criteria" class="section">
+      <div class="section-title"><h2>Struktur KPI Front Office</h2></div>
+      <div class="card" id="kpiMatrix"></div>
+      <div class="section-title"><h2>Bobot Sistem</h2></div>
+      <div class="grid grid-3">
+        <div class="card"><div class="metric-title">Penilaian Umum</div><div class="metric-value">45%</div><div class="metric-note">Kedisiplinan, kerapian, etika, komunikasi</div></div>
+        <div class="card"><div class="metric-title">Penilaian Khusus</div><div class="metric-value">40%</div><div class="metric-note">Kinerja dan operational VHP</div></div>
+        <div class="card"><div class="metric-title">Other</div><div class="metric-value">15%</div><div class="metric-note">Comment, courtesy, VIP treatment, room, promo</div></div>
+      </div>
+    </section>
+
+    <section id="report" class="section">
+      <div class="section-title"><h2>Report Bulanan untuk HRD</h2><button class="btn-dark no-print" onclick="window.print()">Print Report</button></div>
+      <div id="reportContent"></div>
+    </section>
+
+    <section id="printReport" class="print-only"><div id="printContent"></div></section>
+  </main>
+</div>
+
+<div class="modal" id="staffModal">
+  <div class="modal-box"><div class="modal-head"><h2 id="staffModalTitle">Tambah Staff</h2><button class="btn-light" onclick="closeModal('staffModal')">Tutup</button></div>
+    <input type="hidden" id="staffId">
+    <input type="hidden" id="staffPhotoData">
+    <div class="photo-preview-wrap">
+      <img id="staffPhotoPreview" class="photo-lg photo-placeholder" alt="Foto Staff">
+      <div style="flex:1">
+        <label>Foto Staff</label>
+        <input id="staffPhotoInput" type="file" accept="image/*" onchange="previewStaffPhoto(event)">
+        <div class="photo-help">Upload foto staff. Foto akan tersimpan di browser ini dan bisa diedit kapan saja melalui tombol Edit.</div>
+        <div class="actions" style="justify-content:flex-start;margin-top:10px">
+          <button class="btn-light" type="button" onclick="removeStaffPhoto()">Hapus Foto</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-row-2"><div><label>Nama Staff</label><input id="staffName"></div><div><label>Jabatan</label><input id="staffRole"></div></div>
+    <div class="form-row-2"><div><label>Status</label><select id="staffStatus"><option>Aktif</option><option>Casual</option><option>Training</option><option>Non Aktif</option></select></div><div><label>Tanggung Jawab Utama</label><input id="staffResponsibility"></div></div>
+    <div class="actions"><button class="btn-green" onclick="saveStaff()">Simpan Staff & Foto</button></div>
+  </div>
+</div>
+
+<div class="modal" id="assessmentModal">
+  <div class="modal-box">
+    <div class="modal-head"><h2 id="assessmentModalTitle">Input KPI</h2><button class="btn-light" onclick="closeModal('assessmentModal')">Tutup</button></div>
+    <input type="hidden" id="assessmentId">
+    <div class="form-row"><div><label>Staff</label><select id="assessmentStaff"></select></div><div><label>Bulan</label><select id="assessmentMonth"></select></div><div><label>Tahun</label><select id="assessmentYear"></select></div><div><label>Evaluator</label><input id="assessmentEvaluator"></div></div>
+    <div id="scoreForm"></div>
+    <div class="form-row-2"><div><label>Kekuatan Staff</label><textarea id="strengthNote"></textarea></div><div><label>Area Improvement</label><textarea id="improvementNote"></textarea></div></div>
+    <div><label>Rekomendasi untuk HRD</label><textarea id="recommendationNote"></textarea></div>
+    <div class="actions" style="margin-top:16px"><button class="btn-primary" onclick="saveAssessment()">Simpan Penilaian</button></div>
+  </div>
+</div>
+
+<script>
+
+const loginRules = {
+  tio: { password: "tio", access: "tio", label: "Tio - Admin" },
+  intan: { password: "intun", access: "intan", label: "Intan - Supervisor" }
+};
+
+function loginDashboard(){
+  const user = document.getElementById("loginUser").value;
+  const pass = document.getElementById("loginPassword").value;
+  const rule = loginRules[user];
+  if(rule && pass === rule.password){
+    sessionStorage.setItem("foKpiLoggedIn","true");
+    sessionStorage.setItem("foKpiLoginUser",user);
+    localStorage.setItem("foKpiAccess",rule.access);
+    document.body.classList.remove("locked");
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("loginError").style.display = "none";
+    document.getElementById("loginPassword").value = "";
+    setAccessMode(rule.access);
+    return;
+  }
+  document.getElementById("loginError").style.display = "block";
+}
+
+function logoutDashboard(){
+  sessionStorage.removeItem("foKpiLoggedIn");
+  sessionStorage.removeItem("foKpiLoginUser");
+  document.body.classList.add("locked");
+  document.getElementById("loginScreen").style.display = "flex";
+  document.getElementById("loginPassword").value = "";
+}
+
+function checkLoginStatus(){
+  const logged = sessionStorage.getItem("foKpiLoggedIn") === "true";
+  const user = sessionStorage.getItem("foKpiLoginUser");
+  if(logged && loginRules[user]){
+    document.body.classList.remove("locked");
+    document.getElementById("loginScreen").style.display = "none";
+    localStorage.setItem("foKpiAccess", loginRules[user].access);
+  } else {
+    document.body.classList.add("locked");
+    document.getElementById("loginScreen").style.display = "flex";
+  }
+}
+
+const months=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+const categoryWeights={umum:45,khusus:40,other:15};
+const kpiStructure=[
+  {cat:"umum",catTitle:"PENILAIAN UMUM",groups:[
+    {title:"1. KETERLIBATAN & KEDISIPLINAN",items:[["jamMasuk","Jam masuk kerja"],["jamPulang","Jam pulang kerja"],["absen","Absen"],["izinSakit","Ijin / sakit"]]},
+    {title:"2. KERAPIAN",items:[["kerapianPakaian","Kerapian berpakaian & name tag"],["bersihBadan","Bersih, tidak bau badan"]]},
+    {title:"3. ETIKA / KESOPANAN",items:[["etikaBicara","Etika berbicara"],["keramahan","Keramahan"]]},
+    {title:"4. KOMUNIKASI",items:[["handoverPekerjaan","Hand over pekerjaan"],["handoverLostFound","Hand over lost & found"],["komunikasiOperasional","Komunikasi operasional"],["cekatan","Cekatan"]]}
+  ]},
+  {cat:"khusus",catTitle:"PENILAIAN KHUSUS",groups:[
+    {title:"4. KINERJA",items:[["revenueFO","Revenue front Office"],["checkProcess","Check In / Check Out proses"],["blockingReservasi","Blocking reservasi"]]},
+    {title:"6. OPERATIONAL VHP",items:[["registerDataRokok","Registrasi data tamu & rokok"],["inputHarga","Input harga"],["checkInSystem","Check in system"],["checkOutSystem","Check out system"],["nightAudit","Night Audit"],["payment","Payment"],["void","Void"],["kehilanganUang","Kehilangan uang"]]}
+  ]},
+  {cat:"other",catTitle:"7. OTHER",groups:[
+    {title:"7. OTHER",items:[["guestComment","Guest comment collection"],["telephoneCourtesy","Telephone courtesy"],["vipTreatment","VIP treatment / Greeting Card / Dll"],["roomConfiguration","Room configuration"],["sharePromo","Share promo"]]}
+  ]}
+];
+const itemToCat={}; kpiStructure.forEach(c=>c.groups.forEach(g=>g.items.forEach(i=>itemToCat[i[0]]=c.cat)));
+const allItems=kpiStructure.flatMap(c=>c.groups.flatMap(g=>g.items.map(i=>i[0])));
+const defaultStaff=[
+{id:"s1",name:"Tio",role:"Front Office Manager",status:"Aktif",responsibility:"Mengontrol operasional FO, report, koordinasi, evaluasi tim"},
+{id:"s2",name:"Intan",role:"SPV & E-commerce",status:"Aktif",responsibility:"Supervisi shift, OTA, e-commerce, inventory online"},
+{id:"s3",name:"Hendri",role:"FDA Leader",status:"Aktif",responsibility:"Leader FDA, koordinasi shift, guest handling"},
+{id:"s4",name:"Ragil",role:"FDA",status:"Aktif",responsibility:"Check-in, check-out, reservasi, handling tamu"},
+{id:"s5",name:"Iqbal",role:"FDA",status:"Aktif",responsibility:"Check-in, check-out, reservasi, handling tamu"},
+{id:"s6",name:"Selfi",role:"FDA",status:"Aktif",responsibility:"Check-in, check-out, reservasi, handling tamu"},
+{id:"s7",name:"Firda",role:"FDA",status:"Aktif",responsibility:"Check-in, check-out, reservasi, handling tamu"},
+{id:"s8",name:"Dea",role:"Casual",status:"Casual",responsibility:"Support operasional FO dan pelayanan tamu"}];
+
+
+function staffInitial(name){return (name||"?").trim().slice(0,1).toUpperCase()}
+function staffPhotoHtml(staff, cls="photo-sm"){
+  if(staff && staff.photo){
+    return `<img class="${cls}" src="${staff.photo}" alt="Foto ${staff.name}">`;
+  }
+  return `<div class="${cls} photo-placeholder">${staffInitial(staff?.name)}</div>`;
+}
+function setPhotoPreview(data,name=""){
+  const img=document.getElementById("staffPhotoPreview");
+  if(!img)return;
+  if(data){
+    img.src=data;
+    img.classList.remove("photo-placeholder");
+    img.innerHTML="";
+  }else{
+    img.removeAttribute("src");
+    img.classList.add("photo-placeholder");
+    img.alt="Foto Staff";
+    const svg=`data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><rect width="100%" height="100%" rx="32" fill="#101828"/><text x="50%" y="55%" text-anchor="middle" font-family="Arial" font-size="58" font-weight="900" fill="white">${staffInitial(name||"F")}</text></svg>`)}`;
+    img.src=svg;
+  }
+}
+function previewStaffPhoto(event){
+  const file=event.target.files && event.target.files[0];
+  if(!file)return;
+  if(!file.type.startsWith("image/")){
+    alert("File harus berupa gambar.");
+    event.target.value="";
+    return;
+  }
+
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const img=new Image();
+    img.onload=function(){
+      const maxSize=520;
+      let w=img.width;
+      let h=img.height;
+      if(w>h && w>maxSize){h=Math.round(h*maxSize/w);w=maxSize;}
+      else if(h>=w && h>maxSize){w=Math.round(w*maxSize/h);h=maxSize;}
+
+      const canvas=document.createElement("canvas");
+      canvas.width=w;
+      canvas.height=h;
+      const ctx=canvas.getContext("2d");
+      ctx.drawImage(img,0,0,w,h);
+      const compressed=canvas.toDataURL("image/jpeg",0.78);
+
+      document.getElementById("staffPhotoData").value=compressed;
+      setPhotoPreview(compressed,document.getElementById("staffName").value);
+    };
+    img.onerror=function(){
+      alert("Foto gagal dibaca. Gunakan file JPG/PNG lain.");
+      event.target.value="";
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function removeStaffPhoto(){
+  document.getElementById("staffPhotoData").value="";
+  document.getElementById("staffPhotoInput").value="";
+  setPhotoPreview("",document.getElementById("staffName").value);
+}
+
+function getData(k,f){try{return JSON.parse(localStorage.getItem(k))||f}catch{return f}}function setData(k,d){localStorage.setItem(k,JSON.stringify(d))}
+function currentAccess(){return localStorage.getItem("foKpiAccess")||"tio"}function isIntanHiddenStaff(s){return currentAccess()==="intan"&&s.name.toLowerCase()==="intan"}function visibleStaffList(){return getData("foKpiStaff",[]).filter(s=>!isIntanHiddenStaff(s))}
+function randomScores(base){const o={};allItems.forEach(x=>o[x]=Math.max(2,Math.min(5,base+Math.floor(Math.random()*2))));return o}
+
+function normalizeStaffPhotoField(){
+  const staff=getData("foKpiStaff",[]);
+  let changed=false;
+  const normalized=staff.map(s=>{
+    if(typeof s.photo === "undefined"){
+      changed=true;
+      return {...s, photo:""};
+    }
+    return s;
+  });
+  if(changed) setData("foKpiStaff", normalized);
+}
+
+function initData(){if(!localStorage.getItem("foKpiStaff"))setData("foKpiStaff",defaultStaff.map(s=>({...s,photo:""})));if(!localStorage.getItem("foKpiAssessments")){const now=new Date();const bases=[5,4,4,3,3,4,4,3];setData("foKpiAssessments",defaultStaff.map((s,i)=>({id:"a"+(Date.now()+i),staffId:s.id,month:now.getMonth(),year:now.getFullYear(),evaluator:"Front Office Manager",scores:randomScores(bases[i]),strengthNote:"Performa cukup baik pada operasional Front Office.",improvementNote:"Perlu konsistensi pada beberapa item KPI.",recommendationNote:"Lanjutkan monitoring dan coaching sesuai kebutuhan.",createdAt:new Date().toISOString()})))}}
+function selectedMonth(){return parseInt(document.getElementById("monthSelect").value)}function selectedYear(){return parseInt(document.getElementById("yearSelect").value)}
+function fillMonthYear(){const cur=new Date();["monthSelect","assessmentMonth"].forEach(id=>{let el=document.getElementById(id);el.innerHTML=months.map((m,i)=>`<option value="${i}">${m}</option>`).join("");el.value=cur.getMonth()});let yrs="";for(let y=cur.getFullYear()-1;y<=cur.getFullYear()+1;y++)yrs+=`<option value="${y}">${y}</option>`;["yearSelect","assessmentYear"].forEach(id=>{let el=document.getElementById(id);el.innerHTML=yrs;el.value=cur.getFullYear()})}
+function scoreSelect(id,val=4){return `<select id="${id}">`+[5,4,3,2,1].map(v=>`<option value="${v}" ${v==val?"selected":""}>${v} - ${v==5?"Sangat Baik":v==4?"Baik":v==3?"Cukup":v==2?"Kurang":"Buruk"}</option>`).join("")+`</select>`}
+function renderScoreForm(values={}){document.getElementById("scoreForm").innerHTML=kpiStructure.map(cat=>`<div class="category-box"><div class="cat-head cat-${cat.cat}">${cat.catTitle}</div>${cat.groups.map(g=>`<div class="sub-head">${g.title}</div>${g.items.map(([id,label])=>`<div class="score-grid"><div>${label}</div><div>${scoreSelect("score_"+id,values[id]||4)}</div></div>`).join("")}`).join("")}</div>`).join("")}
+function renderKpiMatrix(){document.getElementById("kpiMatrix").innerHTML=kpiStructure.map(cat=>`<div class="kpi-matrix" style="margin-bottom:14px"><div class="kpi-side ${cat.cat}">${cat.catTitle}</div><div class="kpi-content">${cat.groups.map(g=>`<div class="kpi-group"><div class="kpi-head ${cat.cat==="khusus"?"khusus-head":cat.cat==="other"?"other-head":""}">${g.title}</div>${g.items.map(([id,label],idx)=>`<div class="kpi-item">${String.fromCharCode(97+idx)}. ${label}</div>`).join("")}</div>`).join("")}</div></div>`).join("")}
+function setAccessMode(mode){const loginUser=sessionStorage.getItem("foKpiLoginUser");if(loginUser&&loginRules[loginUser]&&mode!==loginRules[loginUser].access){mode=loginRules[loginUser].access;}localStorage.setItem("foKpiAccess",mode);document.getElementById("accessSelect").value=mode;document.getElementById("loginBadge").innerHTML=mode==="intan"?"Login sebagai Intan. Akses semua menu, tetapi data Intan disembunyikan.":"Login sebagai Tio. Akses penuh.";document.getElementById("visibilityNote").innerHTML=mode==="intan"?" · <b>Mode Intan:</b> data Intan disembunyikan.":" · <b>Mode Tio:</b> akses penuh.";refreshAll()}
+function showSection(id,btn){document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));if(btn)btn.classList.add("active");refreshAll()}
+function openModal(id){document.getElementById(id).classList.add("active")}function closeModal(id){document.getElementById(id).classList.remove("active")}
+function fillStaffSelect(){const staff=visibleStaffList();document.getElementById("assessmentStaff").innerHTML=staff.map(s=>`<option value="${s.id}">${s.name} - ${s.role}</option>`).join("");document.getElementById("staffDetailSelect").innerHTML=staff.map(s=>`<option value="${s.id}">${s.name} - ${s.role}</option>`).join("")}
+function openStaffModal(id=null){const staff=getData("foKpiStaff",[]);["staffId","staffName","staffRole","staffResponsibility","staffPhotoData"].forEach(x=>document.getElementById(x).value="");document.getElementById("staffPhotoInput").value="";setPhotoPreview("","");document.getElementById("staffStatus").value="Aktif";document.getElementById("staffModalTitle").innerText="Tambah Staff";if(id){const s=staff.find(x=>x.id===id);if(s){if(isIntanHiddenStaff(s)){alert("Data Intan tidak dapat dilihat pada mode akses Intan.");return}document.getElementById("staffId").value=s.id;document.getElementById("staffName").value=s.name;document.getElementById("staffRole").value=s.role;document.getElementById("staffStatus").value=s.status;document.getElementById("staffResponsibility").value=s.responsibility;document.getElementById("staffPhotoData").value=s.photo||"";setPhotoPreview(s.photo||"",s.name);document.getElementById("staffModalTitle").innerText="Edit Staff"}}openModal("staffModal")}
+function saveStaff(){let staff=getData("foKpiStaff",[]);const id=document.getElementById("staffId").value||"s"+Date.now();const existing=staff.find(x=>x.id===id)||{};const photoValue=document.getElementById("staffPhotoData").value||"";const payload={id,name:document.getElementById("staffName").value.trim(),role:document.getElementById("staffRole").value.trim(),status:document.getElementById("staffStatus").value,responsibility:document.getElementById("staffResponsibility").value.trim(),photo:photoValue};if(!payload.name||!payload.role){alert("Nama dan jabatan wajib diisi.");return}const idx=staff.findIndex(x=>x.id===id);if(idx>=0)staff[idx]=payload;else staff.push(payload);setData("foKpiStaff",staff);closeModal("staffModal");refreshAll()}
+function deleteStaff(id){const staff=getData("foKpiStaff",[]);const s=staff.find(x=>x.id===id);if(s&&isIntanHiddenStaff(s)){alert("Data Intan tidak dapat dihapus pada mode akses Intan.");return}if(!confirm("Hapus staff ini?"))return;setData("foKpiStaff",staff.filter(x=>x.id!==id));refreshAll()}
+function openAssessmentModal(id=null){fillStaffSelect();document.getElementById("assessmentId").value="";document.getElementById("assessmentMonth").value=selectedMonth();document.getElementById("assessmentYear").value=selectedYear();document.getElementById("assessmentEvaluator").value=currentAccess()==="intan"?"Intan - Supervisor":"Tio - Front Office Manager";document.getElementById("strengthNote").value="";document.getElementById("improvementNote").value="";document.getElementById("recommendationNote").value="";renderScoreForm();document.getElementById("assessmentModalTitle").innerText="Input KPI";if(id){const a=getData("foKpiAssessments",[]).find(x=>x.id===id);const s=getData("foKpiStaff",[]).find(x=>x.id===a?.staffId);if(s&&isIntanHiddenStaff(s)){alert("Data Intan tidak dapat dilihat pada mode akses Intan.");return}if(a){document.getElementById("assessmentId").value=a.id;document.getElementById("assessmentStaff").value=a.staffId;document.getElementById("assessmentMonth").value=a.month;document.getElementById("assessmentYear").value=a.year;document.getElementById("assessmentEvaluator").value=a.evaluator||"";renderScoreForm(a.scores);document.getElementById("strengthNote").value=a.strengthNote||"";document.getElementById("improvementNote").value=a.improvementNote||"";document.getElementById("recommendationNote").value=a.recommendationNote||"";document.getElementById("assessmentModalTitle").innerText="Edit KPI"}}openModal("assessmentModal")}
+function saveAssessment(){let assessments=getData("foKpiAssessments",[]);const id=document.getElementById("assessmentId").value||"a"+Date.now();const staffId=document.getElementById("assessmentStaff").value;const s=getData("foKpiStaff",[]).find(x=>x.id===staffId);if(s&&isIntanHiddenStaff(s)){alert("Mode Intan tidak bisa input atau melihat data Intan.");return}const scores={};allItems.forEach(x=>scores[x]=parseInt(document.getElementById("score_"+x).value));const payload={id,staffId,month:parseInt(document.getElementById("assessmentMonth").value),year:parseInt(document.getElementById("assessmentYear").value),evaluator:document.getElementById("assessmentEvaluator").value.trim(),scores,strengthNote:document.getElementById("strengthNote").value.trim(),improvementNote:document.getElementById("improvementNote").value.trim(),recommendationNote:document.getElementById("recommendationNote").value.trim(),createdAt:new Date().toISOString()};const idx=assessments.findIndex(x=>x.id===id);if(idx>=0)assessments[idx]=payload;else assessments.push(payload);setData("foKpiAssessments",assessments);closeModal("assessmentModal");refreshAll()}
+function deleteAssessment(id){if(!confirm("Hapus data penilaian ini?"))return;setData("foKpiAssessments",getData("foKpiAssessments",[]).filter(x=>x.id!==id));refreshAll()}
+function categoryScore(scores,cat){const keys=allItems.filter(x=>itemToCat[x]===cat);return Math.round(keys.reduce((a,k)=>a+(scores[k]||0),0)/(keys.length*5)*100)}
+function totalScore(scores){let t=0;Object.keys(categoryWeights).forEach(c=>t+=categoryScore(scores,c)*categoryWeights[c]/100);return Math.round(t)}
+function grade(score){if(score>=90)return{text:"A",cls:"badge-a",label:"Excellent"};if(score>=80)return{text:"B",cls:"badge-b",label:"Good"};if(score>=70)return{text:"C",cls:"badge-c",label:"Fair"};return{text:"D",cls:"badge-d",label:"Poor"}}
+function recommendation(score){if(score>=90)return"Apresiasi / kandidat reward";if(score>=80)return"Pertahankan performa";if(score>=70)return"Coaching terarah";return"Evaluasi & monitoring mingguan"}
+function periodAssessments(){return getData("foKpiAssessments",[]).filter(a=>a.month===selectedMonth()&&a.year===selectedYear())}
+function rows(){const staff=getData("foKpiStaff",[]);return periodAssessments().map(a=>{const s=staff.find(x=>x.id===a.staffId)||{name:"Staff dihapus",role:"-",status:"-"};if(isIntanHiddenStaff(s))return null;const score=totalScore(a.scores);return{...a,staff:s,score,grade:grade(score),umum:categoryScore(a.scores,"umum"),khusus:categoryScore(a.scores,"khusus"),other:categoryScore(a.scores,"other")}}).filter(Boolean).sort((a,b)=>b.score-a.score)}
+function renderStaff(){const staff=visibleStaffList();document.getElementById("totalStaff").innerText=staff.length;document.getElementById("staffBody").innerHTML=staff.map(s=>`<tr><td>${staffPhotoHtml(s,"photo-sm")}</td><td><b>${s.name}</b></td><td>${s.role}</td><td>${s.status}</td><td>${s.responsibility}</td><td class="no-print"><button class="btn-orange" onclick="openStaffModal('${s.id}')">Edit</button> <button class="btn-red" onclick="deleteStaff('${s.id}')">Delete</button></td></tr>`).join("")||`<tr><td colspan="6" class="empty">Belum ada data staff.</td></tr>`}
+function renderDashboard(){const r=rows();const avg=r.length?Math.round(r.reduce((a,b)=>a+b.score,0)/r.length):0;document.getElementById("avgScore").innerText=avg;document.getElementById("topPerformer").innerText=r.length?r[0].staff.name:"-";document.getElementById("needCoaching").innerText=r.filter(x=>x.score<75).length;document.getElementById("rankingBody").innerHTML=r.map((x,i)=>`<tr><td><b>#${i+1}</b></td><td>${staffPhotoHtml(x.staff,"photo-sm")}</td><td><b>${x.staff.name}</b></td><td>${x.staff.role}</td><td><b>${x.score}</b></td><td><span class="badge ${x.grade.cls}">${x.grade.text} - ${x.grade.label}</span></td><td><div class="progress"><span style="width:${x.score}%"></span></div></td><td>${x.recommendationNote||recommendation(x.score)}</td><td class="no-print"><button class="btn-orange" onclick="openAssessmentModal('${x.id}')">Edit</button> <button class="btn-red" onclick="deleteAssessment('${x.id}')">Delete</button></td></tr>`).join("")||`<tr><td colspan="9" class="empty">Belum ada penilaian.</td></tr>`;renderRankingChart(r);renderCategoryChart(r)}
+function renderAssessments(){const r=rows();document.getElementById("assessmentBody").innerHTML=r.map(x=>`<tr><td><div class="photo-row">${staffPhotoHtml(x.staff,"photo-sm")}<div><b>${x.staff.name}</b><br><span class="small">${x.staff.role}</span></div></div></td><td>${months[x.month]} ${x.year}</td><td>${x.umum}</td><td>${x.khusus}</td><td>${x.other}</td><td><b>${x.score}</b></td><td><span class="badge ${x.grade.cls}">${x.grade.text}</span></td><td class="no-print"><button class="btn-orange" onclick="openAssessmentModal('${x.id}')">Edit</button> <button class="btn-red" onclick="deleteAssessment('${x.id}')">Delete</button></td></tr>`).join("")||`<tr><td colspan="8" class="empty">Belum ada data penilaian.</td></tr>`}
+function renderPerformanceCards(){const r=rows();document.getElementById("staffPerformanceCards").innerHTML=r.map(x=>`<div class="staff-card"><div class="staff-card-head"><div style="display:flex;gap:10px;align-items:center">${staffPhotoHtml(x.staff,"photo-md")}<div><div class="staff-name">${x.staff.name}</div><div class="staff-role">${x.staff.role}</div></div></div><span class="badge ${x.grade.cls}">${x.grade.text}</span></div><div class="score-big">${x.score}</div><div class="progress"><span style="width:${x.score}%"></span></div><div class="kpi-mini">${["umum","khusus","other"].map(c=>`<div class="kpi-mini-row"><span>${c.toUpperCase()}</span><div class="mini-bar"><span style="width:${x[c]}%"></span></div><span>${x[c]}</span></div>`).join("")}</div></div>`).join("")||`<div class="card empty">Belum ada data performa.</div>`}
+function renderDetailCharts(){const r=rows();fillStaffSelect();const sel=document.getElementById("staffDetailSelect");let row=r.find(x=>x.staff.id===sel.value)||r[0];renderRadar(row);renderStaffKpiChart(row)}
+function renderReport(){const r=rows();const period=`${months[selectedMonth()]} ${selectedYear()}`;const avg=r.length?Math.round(r.reduce((a,b)=>a+b.score,0)/r.length):0;const top=r[0]?`${r[0].staff.name} (${r[0].score})`:"-";const access=currentAccess()==="intan"?"Intan - Supervisor, data Intan disembunyikan":"Tio - Admin, akses penuh";const report=`<div class="hero"><h2>Laporan Penilaian KPI Staff Front Office</h2><p><b>Periode:</b> ${period} · <b>Departemen:</b> Front Office · <b>Akses:</b> ${access}</p></div><div class="grid grid-3" style="margin-top:16px"><div class="card"><div class="metric-title">Staff Dinilai</div><div class="metric-value">${r.length}</div></div><div class="card"><div class="metric-title">Rata-Rata Skor</div><div class="metric-value">${avg}</div></div><div class="card"><div class="metric-title">Top Performer</div><div class="metric-value" style="font-size:20px">${top}</div></div></div><div class="card" style="margin-top:16px"><h3>Ringkasan Penilaian</h3><table><thead><tr><th>Rank</th><th>Foto</th><th>Nama</th><th>Jabatan</th><th>Umum</th><th>Khusus</th><th>Other</th><th>Total</th><th>Grade</th><th>Rekomendasi</th></tr></thead><tbody>${r.map((x,i)=>`<tr><td>#${i+1}</td><td>${staffPhotoHtml(x.staff,"photo-sm")}</td><td><b>${x.staff.name}</b></td><td>${x.staff.role}</td><td>${x.umum}</td><td>${x.khusus}</td><td>${x.other}</td><td><b>${x.score}</b></td><td>${x.grade.text} - ${x.grade.label}</td><td>${x.recommendationNote||recommendation(x.score)}</td></tr>`).join("")||`<tr><td colspan="10" class="empty">Belum ada data.</td></tr>`}</tbody></table></div><div class="card" style="margin-top:16px"><h3>Catatan HRD</h3><ul class="kpi-list">${r.map(x=>`<li><b>${x.staff.name}:</b> Kekuatan: ${x.strengthNote||"-"} | Improvement: ${x.improvementNote||"-"} | Rekomendasi: ${x.recommendationNote||recommendation(x.score)}</li>`).join("")}</ul><br><table><tr><td style="height:90px;text-align:center;vertical-align:bottom">Front Office Manager<br><br><br>_____________________</td><td style="height:90px;text-align:center;vertical-align:bottom">HRD<br><br><br>_____________________</td></tr></table></div>`;document.getElementById("reportContent").innerHTML=report;document.getElementById("printContent").innerHTML=report}
+function clearCanvas(id){const c=document.getElementById(id);if(!c)return null;const ctx=c.getContext("2d");ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle="#fff";ctx.fillRect(0,0,c.width,c.height);return{c,ctx}}function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath()}
+function renderRankingChart(r){const o=clearCanvas("rankingChart");if(!o)return;const{c,ctx}=o;if(!r.length){ctx.fillText("Belum ada data.",30,50);return}const left=115,top=38,barH=26,gap=17,w=c.width-left-70;r.forEach((x,i)=>{const y=top+i*(barH+gap);ctx.fillStyle="#475569";ctx.font="800 13px Arial";ctx.fillText(x.staff.name,22,y+18);ctx.fillStyle="#e5e7eb";roundRect(ctx,left,y,w,barH,13);ctx.fill();const g=ctx.createLinearGradient(left,0,left+w,0);g.addColorStop(0,"#c79a3b");g.addColorStop(.6,"#2563eb");g.addColorStop(1,"#7c3aed");ctx.fillStyle=g;roundRect(ctx,left,y,w*(x.score/100),barH,13);ctx.fill();ctx.fillStyle="#111827";ctx.font="900 14px Arial";ctx.fillText(x.score,left+w+18,y+18)})}
+function renderCategoryChart(r){const o=clearCanvas("categoryChart");if(!o)return;const{c,ctx}=o;if(!r.length){ctx.fillText("Belum ada data.",30,50);return}const avg={umum:Math.round(r.reduce((a,b)=>a+b.umum,0)/r.length),khusus:Math.round(r.reduce((a,b)=>a+b.khusus,0)/r.length),other:Math.round(r.reduce((a,b)=>a+b.other,0)/r.length)};const labels=[["umum","Penilaian Umum"],["khusus","Penilaian Khusus"],["other","Other"]];const colors=["#2563eb","#f97316","#16a34a"];const left=65,base=300,w=110,maxH=210;ctx.font="900 16px Arial";ctx.fillStyle="#111827";ctx.fillText("Rata-rata kategori KPI tim",26,32);labels.forEach(([k,l],i)=>{let h=maxH*(avg[k]/100),x=left+i*170,y=base-h;ctx.fillStyle="#e5e7eb";roundRect(ctx,x,base-maxH,w,maxH,12);ctx.fill();ctx.fillStyle=colors[i];roundRect(ctx,x,y,w,h,12);ctx.fill();ctx.fillStyle="#111827";ctx.font="900 18px Arial";ctx.fillText(avg[k],x+38,y-8);ctx.fillStyle="#475569";ctx.font="800 12px Arial";ctx.fillText(l,x-8,base+24)})}
+function renderRadar(row){const o=clearCanvas("radarChart");if(!o)return;const{c,ctx}=o;if(!row){ctx.fillText("Belum ada data.",30,50);return}const keys=["umum","khusus","other"];const vals=[row.umum,row.khusus,row.other];const labels=["Umum","Khusus","Other"];const cx=c.width/2,cy=c.height/2+20,R=130;ctx.strokeStyle="#e5e7eb";for(let l=1;l<=5;l++){ctx.beginPath();keys.forEach((k,i)=>{let a=Math.PI*2*i/keys.length-Math.PI/2,r=R*l/5,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;if(i==0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.closePath();ctx.stroke()}keys.forEach((k,i)=>{let a=Math.PI*2*i/keys.length-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R);ctx.stroke();ctx.fillStyle="#475569";ctx.font="900 13px Arial";ctx.textAlign="center";ctx.fillText(labels[i],cx+Math.cos(a)*(R+45),cy+Math.sin(a)*(R+35))});ctx.beginPath();vals.forEach((v,i)=>{let a=Math.PI*2*i/keys.length-Math.PI/2,r=R*(v/100),x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;if(i==0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.closePath();ctx.fillStyle="rgba(37,99,235,.22)";ctx.fill();ctx.strokeStyle="#2563eb";ctx.lineWidth=3;ctx.stroke();ctx.textAlign="left";ctx.fillStyle="#111827";ctx.font="900 18px Arial";ctx.fillText(`${row.staff.name} · Skor ${row.score}`,26,32)}
+function renderStaffKpiChart(row){const o=clearCanvas("staffKpiChart");if(!o)return;const{c,ctx}=o;if(!row){ctx.fillText("Belum ada data.",30,50);return}const data=[["Penilaian Umum",row.umum],["Penilaian Khusus",row.khusus],["Other",row.other]];const left=170,top=70,w=c.width-left-70,barH=34,gap=32;ctx.fillStyle="#111827";ctx.font="900 18px Arial";ctx.fillText(`Kategori KPI ${row.staff.name}`,26,32);data.forEach(([l,v],i)=>{let y=top+i*(barH+gap);ctx.fillStyle="#475569";ctx.font="900 13px Arial";ctx.fillText(l,26,y+22);ctx.fillStyle="#e5e7eb";roundRect(ctx,left,y,w,barH,17);ctx.fill();const g=ctx.createLinearGradient(left,0,left+w,0);g.addColorStop(0,"#c79a3b");g.addColorStop(1,"#2563eb");ctx.fillStyle=g;roundRect(ctx,left,y,w*(v/100),barH,17);ctx.fill();ctx.fillStyle="#111827";ctx.font="900 15px Arial";ctx.fillText(v,left+w+16,y+22)})}
+function refreshAll(){renderStaff();fillStaffSelect();renderKpiMatrix();renderDashboard();renderAssessments();renderPerformanceCards();renderDetailCharts();renderReport()}
+function resetDemo(){if(!confirm("Reset data dan gunakan contoh nilai KPI?"))return;localStorage.removeItem("foKpiStaff");localStorage.removeItem("foKpiAssessments");initData();refreshAll()}
+initData();normalizeStaffPhotoField();fillMonthYear();renderScoreForm();checkLoginStatus();setAccessMode(currentAccess());refreshAll();
+</script>
+</body>
+</html>
